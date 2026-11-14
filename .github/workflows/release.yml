@@ -1,0 +1,40 @@
+name: Release
+
+# Pushing a `v*` tag builds the plugin and publishes it as a GitHub release.
+# moon downloads the `.wasm` attached to the release when the plugin is
+# referenced with the `github://` locator.
+on:
+  push:
+    tags:
+      - 'v[0-9]+*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.98 --profile minimal --target wasm32-wasip1
+          rustup default 1.98
+      - name: Check that the tag is the version of the crate
+        run: |
+          version=$(cargo metadata --no-deps --format-version 1 --locked | jq --raw-output '.packages[0].version')
+          test "v$version" = "$GITHUB_REF_NAME"
+      - name: Test the composer.json logic
+        run: cargo test --no-default-features --locked
+      - name: Build the plugin
+        run: cargo build --release --target wasm32-wasip1 --locked
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp target/wasm32-wasip1/release/composer_toolchain.wasm .
+          sha256sum composer_toolchain.wasm > composer_toolchain.wasm.sha256
+          gh release create "$GITHUB_REF_NAME" \
+            composer_toolchain.wasm composer_toolchain.wasm.sha256 \
+            --title "$GITHUB_REF_NAME" --generate-notes

@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Test and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install Rust
+        run: |
+          rustup toolchain install 1.98 --profile minimal --component rustfmt,clippy --target wasm32-wasip1
+          rustup default 1.98
+      - name: Check the formatting
+        run: cargo fmt --check
+      # Without the default `wasm` feature, only the composer.json logic is
+      # compiled: it runs natively and needs none of the moon crates.
+      - name: Test the composer.json logic
+        run: cargo test --no-default-features --locked
+      - name: Lint the plugin
+        run: cargo clippy --target wasm32-wasip1 --locked -- --deny warnings
+      - name: Build the plugin
+        run: cargo build --release --target wasm32-wasip1 --locked

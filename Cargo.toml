@@ -1,0 +1,51 @@
+[package]
+name = "composer_toolchain"
+version = "0.1.0"
+edition = "2024"
+description = "Composer toolchain WASM plugin for moon: keeps composer.json in sync with the project graph."
+license = "MIT"
+repository = "https://github.com/nathan-de-pachtere/moon-composer-toolchain"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "lib"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = { version = "1", features = ["preserve_order"] }
+
+# Only needed by the WASM plugin itself, not by the composer.json logic.
+extism-pdk = { version = "1.4.1", optional = true }
+schematic = { version = "0.19.7", default-features = false, features = [
+    "schema",
+], optional = true }
+
+# Pinned to the crates moon 2.5.x was built with: the host and the plugin
+# exchange these types as JSON, so they have to describe the same shapes.
+moon_common = { version = "=2.0.8", optional = true }
+moon_config = { version = "=2.1.2", optional = true }
+moon_pdk = { version = "=2.1.1", optional = true }
+moon_pdk_api = { version = "=2.1.3", optional = true }
+moon_project = { version = "=2.0.8", optional = true }
+moon_task = { version = "=2.1.2", optional = true }
+
+[features]
+default = ["wasm"]
+wasm = [
+    "dep:extism-pdk",
+    "dep:schematic",
+    "dep:moon_common",
+    "dep:moon_config",
+    "dep:moon_pdk",
+    "dep:moon_pdk_api",
+    "dep:moon_project",
+    "dep:moon_task",
+]
+
+[profile.release]
+codegen-units = 1
+debug = false
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true
