@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 description = "Composer toolchain WASM plugin for moon: keeps composer.json in sync with the project graph."
 license = "MIT"
-repository = "https://github.com/nathan-de-pachtere/moon-composer-toolchain"
+repository = "https://github.com/alpsify/moon-composer-toolchain"
 publish = false
 
 [lib]

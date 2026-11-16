@@ -18,11 +18,11 @@ Enable the toolchain in `.moon/toolchains.yml`:
 
 ```yaml
 composer:
-  plugin: github://nathan-de-pachtere/moon-composer-toolchain@v0.1.0
+  plugin: github://alpsify/moon-composer-toolchain@v0.1.0
 ```
 
 moon downloads the `.wasm` attached to that
-[release](https://github.com/nathan-de-pachtere/moon-composer-toolchain/releases) and caches it.
+[release](https://github.com/alpsify/moon-composer-toolchain/releases) and caches it.
 Without the `@v0.1.0`, it follows the latest release instead. In CI, set `GITHUB_TOKEN` so that
 the download doesn't run into GitHub's rate limits.
 
@@ -128,7 +128,7 @@ In `.moon/toolchains.yml`, under `composer`:
 | `pathRepositorySymlink`            | _(unset)_ | Value of `options.symlink`. Unset: not written, Composer decides.                                                                                     |
 | `pathRepositoryVersion`            | `'0.0.0'` | Version given to the packages in `options.versions`, unless their `composer.json` declares a `version`. Empty: no version is written.                 |
 
-`moon toolchain info composer github://nathan-de-pachtere/moon-composer-toolchain` prints them.
+`moon toolchain info composer github://alpsify/moon-composer-toolchain` prints them.
 
 Every setting can be overridden for one project, in its `moon.yml`:
 
@@ -149,7 +149,7 @@ Docker build context, for instance):
 
 ```yaml
 composer:
-  plugin: github://nathan-de-pachtere/moon-composer-toolchain@v0.1.0
+  plugin: github://alpsify/moon-composer-toolchain@v0.1.0
   pathRepositoryUrl: ../packages/*
   pathRepositorySymlink: false
 ```
@@ -164,7 +164,7 @@ the workspace:
 
 ```yaml
 composer:
-  plugin: github://nathan-de-pachtere/moon-composer-toolchain@v0.1.0
+  plugin: github://alpsify/moon-composer-toolchain@v0.1.0
   pathRepositorySymlink: true
 ```
 
